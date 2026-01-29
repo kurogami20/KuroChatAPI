@@ -9,42 +9,63 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/v1')]
 final class UserController extends AbstractController
 {
 
 #[Route('/signin', name: 'app_user_signin', methods: ['POST'])]
-    public function signin(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
+    public function signin(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, ValidatorInterface $validator): JsonResponse
     {
-       $data = json_decode($request->getContent(), true);
+            // Decode the JSON request body into an associative array
+            $data = json_decode($request->getContent(), true);
 
-
-                if ($data){
+            if ($data){
+                // Create a new User entity instance
                 $newUser = new User();
                 $newUser->setMail($data['mail']);
                 $newUser->setPassword($data['password']);
+                
+                // Validate the user entity against defined constraints
+                $validatorErrors = $validator->validate($newUser);
+                if (count($validatorErrors) > 0) {
+                    $errorsString = (string) $validatorErrors;
 
-                $plaintextPassword = $data['password'];
-
-                $passwordHasher->hashPassword(
-                            $newUser,
-                            $plaintextPassword
-                        );
-
-
-                // $entityManager->persist($newUser);
-                // $entityManager->flush();
-
-                return new JsonResponse([
-                        'user'=>$newUser->getMail(),
-                    ]
-                );} else {
                     return new JsonResponse([
-                        'message' => 'Invalid data provided',
+                        'message' => $errorsString,
                         'status' => 'error'
                     ], 400);
                 }
+                
+                $plaintextPassword = $data['password'];
+
+                // Hash the password using the configured password hasher
+                $hashedPassword = $passwordHasher->hashPassword(
+                    $newUser,
+                    $plaintextPassword
+                );
+
+                // Replace plaintext password with hashed password
+                $newUser->setPassword($hashedPassword);
+
+                // Schedule the entity for insertion
+                $entityManager->persist($newUser);
+
+                // Execute the pending database operations
+                $entityManager->flush();
+
+                return new JsonResponse([
+                    'user' => $newUser->getMail(),
+                    'message' => 'User created successfully',
+                    'status' => 'success'
+                ], 200);
+            } else {
+                return new JsonResponse([
+                    'message' => 'Invalid data provided',
+                    'status' => 'error'
+                ], 400);
+            }
     }
 
     #[Route('/login', name: 'app_user_login', methods: ['POST'])]

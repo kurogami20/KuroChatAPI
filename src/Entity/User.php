@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Entity;
-
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User
+class User implements PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,9 +18,22 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Email(
+        message: 'The email is not a valid email.'
+    )]
+    #[Assert\NotBlank(
+        message: 'Email should not be blank.'
+    )]
     private ?string $mail = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(
+        message: 'Password should not be blank.'
+    )]
+    #[Assert\Length(
+        min: 8,
+        minMessage: 'Your password must be at least {{ limit }} characters long'
+    )]
     private ?string $password = null;
 
     /**
