@@ -1,0 +1,31 @@
+{
+  "width": 458,
+  "height": 187,
+  "cx": [
+    [ "FAIT", 56 ],
+    [ "CONVERSATION", 172 ],
+    [ "POSSEDE", 296 ],
+    [ "QUESTION", 407 ],
+    [ "UTILISATEUR", 56 ],
+    [ "POSSEDE2", 172 ],
+    [ "REPONSE", 296 ]
+  ],
+  "cy": [
+    [ "FAIT", 43 ],
+    [ "CONVERSATION", 43 ],
+    [ "POSSEDE", 43 ],
+    [ "QUESTION", 43 ],
+    [ "UTILISATEUR", 136 ],
+    [ "POSSEDE2", 136 ],
+    [ "REPONSE", 136 ]
+  ],
+  "shift": [
+    [ "FAIT,UTILISATEUR,0", 0 ],
+    [ "FAIT,CONVERSATION,0", 0 ],
+    [ "POSSEDE,QUESTION,0", 0 ],
+    [ "POSSEDE,CONVERSATION,0", 0 ],
+    [ "POSSEDE2,REPONSE,0", 0 ],
+    [ "POSSEDE2,CONVERSATION,0", 0 ]
+  ],
+  "ratio": []
+}

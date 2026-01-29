@@ -1,0 +1,12 @@
+%AYANT-DROIT: num. ayant-droit, nom ayant-droit, lien
+%DIRIGER, 0N [responsable] EMPLOYÉ, 01 PROJET
+
+FAIT, 0N UTILISATEUR, 11 CONVERSATION
+CONVERSATION: rèf.conversation
+POSSEDE, 11 QUESTION, 1N CONVERSATION
+QUESTION: rèf.question, texte
+
+UTILISATEUR: rèf.utilisateur, mail, mot de passe
+POSSEDE2, 11 REPONSE, 1N CONVERSATION
+REPONSE: rèf.réponse, texte
+:
