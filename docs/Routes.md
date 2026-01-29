@@ -8,7 +8,7 @@ A description of all the routes of the API
 | ------ | ------------------- | -------------- | ------ |
 | POST   | /api/v1/user/login  | Connect a user | public |
 | POST   | /api/v1/user/signin | Create a user  | public |
-| DELETE | /api/v1/user/logout | Connect a user | auth   |
+| POST   | /api/v1/user/logout | Connect a user | auth   |
 
 ## Conversations
 
