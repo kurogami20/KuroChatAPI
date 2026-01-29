@@ -12,11 +12,12 @@ A description of all the routes of the API
 
 ## Conversations
 
-| Method | Endpoint                 | Description            | Access |
-| ------ | ------------------------ | ---------------------- | ------ |
-| GET    | /api/v1/conversation     | List all conversations | auth   |
-| GET    | /api/v1/conversation/:id | List one conversation  | auth   |
-| DELETE | /api/v1/conversation     | Delete a conversation  | auth   |
+| Method | Endpoint                 | Description             | Access |
+| ------ | ------------------------ | ----------------------- | ------ |
+| GET    | /api/v1/conversation     | List all conversations  | auth   |
+| GET    | /api/v1/conversation/:id | List one conversation   | auth   |
+| POST   | /api/v1/conversation     | create one conversation | auth   |
+| DELETE | /api/v1/conversation     | Delete a conversation   | auth   |
 
 ## Question
 
