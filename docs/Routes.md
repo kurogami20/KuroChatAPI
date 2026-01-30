@@ -8,15 +8,16 @@ A description of all the routes of the API
 | ------ | ------------------- | -------------- | ------ |
 | POST   | /api/v1/user/login  | Connect a user | public |
 | POST   | /api/v1/user/signin | Create a user  | public |
-| DELETE | /api/v1/user/logout | Connect a user | auth   |
+| POST   | /api/v1/user/logout | Connect a user | auth   |
 
 ## Conversations
 
-| Method | Endpoint                 | Description            | Access |
-| ------ | ------------------------ | ---------------------- | ------ |
-| GET    | /api/v1/conversation     | List all conversations | auth   |
-| GET    | /api/v1/conversation/:id | List one conversation  | auth   |
-| DELETE | /api/v1/conversation     | Delete a conversation  | auth   |
+| Method | Endpoint                 | Description             | Access |
+| ------ | ------------------------ | ----------------------- | ------ |
+| GET    | /api/v1/conversation     | List all conversations  | auth   |
+| GET    | /api/v1/conversation/:id | List one conversation   | auth   |
+| POST   | /api/v1/conversation     | create one conversation | auth   |
+| DELETE | /api/v1/conversation     | Delete a conversation   | auth   |
 
 ## Question
 
