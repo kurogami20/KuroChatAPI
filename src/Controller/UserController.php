@@ -12,6 +12,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
+use function PHPSTORM_META\map;
+
 #[Route('/api/v1')]
 final class UserController extends AbstractController
 {
@@ -127,12 +129,27 @@ final class UserController extends AbstractController
             }
 
         }
-    #[Route('/logout', name: 'app_user_logout', methods: ['POST'])]
-        public function logout(): JsonResponse
+    #[Route('/logout', name: 'app_user_logout', methods: ['POST'] )]
+        public function logout(Request $request, JWTTokenManagerInterface $JWTManager): JsonResponse
         {
+            $bearerToken = $request->headers->get('Authorization');
+            // $JWTManager->parse(explode(' ', $bearerToken)[1] ?? '');
+            if (!$bearerToken) {
+                return new JsonResponse([
+                    'message' => 'No token provided',
+                    'status' => 'error'
+                ], 400);
+            }
+            if (!$JWTManager->parse(explode(' ', $bearerToken)[1] ?? '')) {
+                return new JsonResponse([
+                    'message' => 'Invalid token',
+                    'status' => 'error'
+                ], 400);
+            }
+
             return new JsonResponse([
-                    'message' => 'Welcome to the User API!',
-                    'status' => 'success'
+                    'message' => 'User logged out successfully',
+                    'status' => 'success',
                 ]
             );
         }
