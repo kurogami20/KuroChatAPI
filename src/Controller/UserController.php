@@ -18,8 +18,8 @@ use function PHPSTORM_META\map;
 final class UserController extends AbstractController
 {
 
-    #[Route('/signin', name: 'app_user_signin', methods: ['POST'])]
-        public function signin(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, ValidatorInterface $validator): JsonResponse
+    #[Route('/signup', name: 'app_user_signup', methods: ['POST'])]
+        public function signup(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, ValidatorInterface $validator): JsonResponse
         {
                 // Decode the JSON request body into an associative array
                 $data = json_decode($request->getContent(), true);
