@@ -79,12 +79,11 @@ final class ConversationController extends AbstractController
                 ], Response::HTTP_UNAUTHORIZED);
             }
             $oneConversation = $entityManager->getRepository(Conversation::class)->findOneBy(['id'=>$data['id'], 'user_id'=>$currentUser->getId()]);
-            $questions = $oneConversation ? $oneConversation->getQuestions() : null;
-            $answers = $oneConversation ? $oneConversation->getAnswers() : null;
+            $questions =  $oneConversation->getQuestions();
+            $answers =  $oneConversation->getAnswers();
             $completeConversation = [
-                'conversation' => $oneConversation,
-                'questions' => $questions,
-                'answers' => $answers
+                'questions' => $questions->toArray()  ,
+                'answers' => $answers->toArray()
             ];
             if (!$oneConversation) {
                 return new JsonResponse([
