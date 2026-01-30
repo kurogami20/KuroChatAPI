@@ -147,9 +147,11 @@ final class UserController extends AbstractController
                 ], 400);
             }
 
+
             return new JsonResponse([
                     'message' => 'User logged out successfully',
                     'status' => 'success',
+
                 ]
             );
         }
