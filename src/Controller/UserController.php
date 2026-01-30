@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 #[Route('/api/v1')]
 final class UserController extends AbstractController
@@ -33,8 +34,9 @@ final class UserController extends AbstractController
                         $errorsString = (string) $validatorErrors;
 
                         return new JsonResponse([
-                            'message' => $errorsString,
-                            'status' => 'error'
+                            'message' => 'Email or password invalid',
+                            'status' => 'error',
+                            'errors' => $errorsString
                         ], 400);
                     }
 
@@ -69,13 +71,61 @@ final class UserController extends AbstractController
         }
 
     #[Route('/login', name: 'app_user_login', methods: ['POST'])]
-        public function login(): JsonResponse
+        public function login(Request $request,
+        ValidatorInterface $validator,
+         UserPasswordHasherInterface $passwordHasher,
+          EntityManagerInterface $entityManager,
+          JWTTokenManagerInterface $JWTManager
+          ): JsonResponse
         {
+            $data = json_decode($request->getContent(), true);
+
+            if($data){
+                $user = new User();
+                $user->setMail($data['mail']);
+                $user->setPassword($data['password']);
+                $plaintextPassword = $data['password'];
+                // Validate the input data
+                $validatorErrors = $validator->validate($user);
+                if (count($validatorErrors) > 0) {
+                $errorsString = (string) $validatorErrors;
+
+                return new JsonResponse([
+                'message' => 'Email or password invalid',
+                'status' => 'error',
+                'errors' => $errorsString
+                ], 400);
+                }
+                $actualUser = $entityManager->getRepository(User::class)->findOneBy(['mail' => $data['mail']?? null]);
+                if (!$actualUser) {
+                return new JsonResponse([
+                'message' => 'Email or password invalid',
+                'status' => 'error',
+                ], 400);
+                }
+
+                if (!$passwordHasher->isPasswordValid($actualUser, $plaintextPassword)) {
+                return new JsonResponse([
+                'message' => 'Email or password invalid',
+                'status' => 'error',
+                ], 400);
+                }
+                $token = $JWTManager->create($actualUser);
+
+                return new JsonResponse([
+                'user' => $actualUser->getMail(),
+                'message' => 'User logged in successfully',
+                'status' => 'success',
+                'token' => $token
+                ], 200);
+
+            }else{
             return new JsonResponse([
-                    'message' => 'Welcome to the User API!',
-                    'status' => 'success'
-                ]
-            );
+            'message' => 'Invalid data provided',
+            'status' => 'error'
+            ], 400);
+            }
+
         }
     #[Route('/logout', name: 'app_user_logout', methods: ['POST'])]
         public function logout(): JsonResponse

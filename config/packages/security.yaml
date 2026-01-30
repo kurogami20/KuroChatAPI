@@ -10,10 +10,17 @@ security:
         users_in_memory: { memory: null }
 
     firewalls:
+        # API protégée
+        api:
+            pattern: ^/api/v1
+            stateless: true
+            jwt: ~
+
         dev:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+
         main:
             lazy: true
             provider: users_in_memory
@@ -26,8 +33,9 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/v1/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/v1/signin, roles: PUBLIC_ACCESS }
+        - { path: ^/api/v1, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
