@@ -15,7 +15,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 #[Route('/api/v1')]
 final class ConversationController extends AbstractController
 {
-    #[Route('/conversations', name: 'app_conversation', methods: ['POST'])]
+    #[Route('/conversations', name: 'app_conversation', methods: ['GET'])]
         public function allConversations(EntityManagerInterface $entityManager, Request $request, JWTTokenManagerInterface $JWTManager): JsonResponse
         {
         $bearerToken = $request->headers->get('Authorization');
@@ -79,6 +79,13 @@ final class ConversationController extends AbstractController
                 ], Response::HTTP_UNAUTHORIZED);
             }
             $oneConversation = $entityManager->getRepository(Conversation::class)->findOneBy(['id'=>$data['id'], 'user_id'=>$currentUser->getId()]);
+            $questions = $oneConversation ? $oneConversation->getQuestions() : null;
+            $answers = $oneConversation ? $oneConversation->getAnswers() : null;
+            $completeConversation = [
+                'conversation' => $oneConversation,
+                'questions' => $questions,
+                'answers' => $answers
+            ];
             if (!$oneConversation) {
                 return new JsonResponse([
                     'message' => 'Conversation not found',
@@ -87,15 +94,42 @@ final class ConversationController extends AbstractController
             }
         return $this->json([
         'message' => 'Here is the conversation you asked for',
-        'data' => $oneConversation,
+        'data' => $completeConversation,
         ]);
         }
     #[Route('/conversations/create', name: 'app_conversation_create', methods: ['POST'])]
-        public function createConversation(): JsonResponse
+        public function createConversation(Request $request, EntityManagerInterface $entityManager, JWTTokenManagerInterface $JWTManager): JsonResponse
         {
+            $bearerToken = $request->headers->get('Authorization');
+            if(!$bearerToken){
+                return new JsonResponse([
+                    'message' => 'Authorization token missing',
+                    'status' => 'error'
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+            $tokenDecoded = $JWTManager->parse(explode(' ', $bearerToken)[1] ?? '');
+            if (!$tokenDecoded) {
+                return new JsonResponse([
+                    'message' => 'Invalid token',
+                    'status' => 'error'
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+             $currentUser = $entityManager->getRepository(User::class)->findOneBy(['mail' => $tokenDecoded['username']?? null]);
+                if (!$currentUser) {
+                    return new JsonResponse([
+                        'message' => 'User not found',
+                        'status' => 'error'
+                    ], Response::HTTP_UNAUTHORIZED);
+                }
+
+                $newConversation = new Conversation();
+                $newConversation->setUserId($currentUser);
+                $entityManager->persist($newConversation);
+                $entityManager->flush();
+
         return $this->json([
-        'message' => 'Welcome to your new controller!',
-        'path' => 'src/Controller/ConversationController.php',
+        'message' => 'New conversation created successfully',
+        'id' => $newConversation->getId(),
         ]);
         }
 
