@@ -61,6 +61,7 @@ final class AnswerController extends AbstractController
 
         return $this->json([
             'message' => 'Answer created successfully',
+            'status' => 'success',
             'data' => $newAnswer->getText(),
         ]);
     }

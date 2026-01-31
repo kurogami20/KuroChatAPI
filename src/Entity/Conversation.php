@@ -33,6 +33,9 @@ class Conversation
     #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'conversation_id')]
     private Collection $questions;
 
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
+
     public function __construct()
     {
         $this->answers = new ArrayCollection();
@@ -112,6 +115,18 @@ class Conversation
                 $question->setConversationId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
 
         return $this;
     }

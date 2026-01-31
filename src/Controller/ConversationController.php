@@ -100,6 +100,7 @@ final class ConversationController extends AbstractController
         public function createConversation(Request $request, EntityManagerInterface $entityManager, JWTTokenManagerInterface $JWTManager): JsonResponse
         {
             $bearerToken = $request->headers->get('Authorization');
+            $data = json_decode($request->getContent(), true);
             if(!$bearerToken){
                 return new JsonResponse([
                     'message' => 'Authorization token missing',
@@ -113,6 +114,14 @@ final class ConversationController extends AbstractController
                     'status' => 'error'
                 ], Response::HTTP_UNAUTHORIZED);
             }
+
+            if (!isset($data['title'])) {
+                return new JsonResponse([
+                    'message' => 'Conversation title is required',
+                    'status' => 'error'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
              $currentUser = $entityManager->getRepository(User::class)->findOneBy(['mail' => $tokenDecoded['username']?? null]);
                 if (!$currentUser) {
                     return new JsonResponse([
@@ -122,12 +131,14 @@ final class ConversationController extends AbstractController
                 }
 
                 $newConversation = new Conversation();
+                $newConversation->setTitle($data['title']);
                 $newConversation->setUserId($currentUser);
                 $entityManager->persist($newConversation);
                 $entityManager->flush();
 
         return $this->json([
         'message' => 'New conversation created successfully',
+        'status' => 'success',
         'id' => $newConversation->getId(),
         ]);
         }

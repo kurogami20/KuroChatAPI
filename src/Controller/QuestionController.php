@@ -60,6 +60,7 @@ final class QuestionController extends AbstractController
 
         return $this->json([
             'message' => 'Question created successfully',
+            'status' => 'success',
             'data' => $newQuestion->getText(),
         ]);
     }
