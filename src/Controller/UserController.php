@@ -42,6 +42,14 @@ final class UserController extends AbstractController
                         ], 400);
                     }
 
+                    $findExistingUser = $entityManager->getRepository(User::class)->findOneBy(['mail' => $data['mail'] ?? null]);
+                    if ($findExistingUser) {
+                        return new JsonResponse([
+                            'message' => 'Email already in use',
+                            'status' => 'error'
+                        ], 400);
+                    }
+
                     $plaintextPassword = $data['password'];
 
                     // Hash the password using the configured password hasher

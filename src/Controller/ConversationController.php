@@ -40,11 +40,18 @@ final class ConversationController extends AbstractController
                 ], Response::HTTP_UNAUTHORIZED);
             }
 
-        $conversations = $entityManager->getRepository(Conversation::class)->findAll(['user_id'=>$currentUser->getId()]);
-
+        $conversations = $entityManager->getRepository(Conversation::class)->findBy(['user_id'=>$currentUser->getId()]);
+        $conversationsArray = [];
+        foreach ($conversations as $conversation) {
+            $conversationsArray[] = [
+                'id' => $conversation->getId(),
+                'title' => $conversation->getTitle(),
+            ];
+        }
         return $this->json([
         'message' => 'all conversations found',
-        'data' => $conversations,
+        'status' => 'success',
+        'data' => $conversationsArray,
         ]);
         }
     #[Route('/conversation', name: 'app__one_conversation', methods: ['POST'])]
@@ -81,9 +88,23 @@ final class ConversationController extends AbstractController
             $oneConversation = $entityManager->getRepository(Conversation::class)->findOneBy(['id'=>$data['id'], 'user_id'=>$currentUser->getId()]);
             $questions =  $oneConversation->getQuestions();
             $answers =  $oneConversation->getAnswers();
+            $conversationArray = [];
+            foreach ($questions as $question) {
+                $conversationArray['questions'][] = [
+                    'id' => $question->getId(),
+                    'text' => $question->getText(),
+                ];
+            }
+            foreach ($answers as $answer) {
+                $conversationArray['answers'][] = [
+                    'id' => $answer->getId(),
+                    'text' => $answer->getText(),
+                ];
+            }
             $completeConversation = [
-                'questions' => $questions->toArray()  ,
-                'answers' => $answers->toArray()
+                'id' => $oneConversation->getId(),
+                'title' => $oneConversation->getTitle(),
+                'conversation' => $conversationArray,
             ];
             if (!$oneConversation) {
                 return new JsonResponse([
