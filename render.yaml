@@ -5,8 +5,7 @@ services:
       plan: free
       dockerfilePath: Dockerfile
       buildCommand: ""
-      startCommand: ""
-      dockerCommand: "symfony server:start --port=8000 --no-tls"
+      dockerCommand: symfony server:start --port=8000 --no-tls
       envVars:
           - key: DATABASE_URL
             value: "postgresql://kurochat_db_user:sbJ9hjMZH5ScMdeYP175dBkeFnXJckL5@dpg-d6s0u28gjchc73biuhu0-a/kurochat_db"
