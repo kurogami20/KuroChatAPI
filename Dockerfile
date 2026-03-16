@@ -6,6 +6,6 @@ COPY . .
 
 EXPOSE 8000
 
-CMD [ "symfony", "console", "doctrine:migrations:migrate", "--no-interaction" ]
+# CMD [ "symfony", "console", "doctrine:migrations:migrate", "--no-interaction" ]
 
 
