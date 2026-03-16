@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY . .
 
+
 EXPOSE 8000
 
 
