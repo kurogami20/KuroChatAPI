@@ -1,0 +1,22 @@
+services:
+    - type: web
+      name: kurochatapi
+      runtime: docker
+      plan: free
+      dockerfilePath: Dockerfile
+      buildCommand: ""
+      startCommand: "symfony server:start --port=8000 --no-tls"
+      envVars:
+          - key: DATABASE_URL
+            value: "postgresql://kurochat_db_user:sbJ9hjMZH5ScMdeYP175dBkeFnXJckL5@dpg-d6s0u28gjchc73biuhu0-a/kurochat_db"
+
+    - type: worker
+      name: migrate
+      runtime: docker
+      plan: free
+      dockerfilePath: Dockerfile
+      buildCommand: ""
+      startCommand: "symfony console doctrine:migrations:migrate --no-interaction"
+      envVars:
+          - key: DATABASE_URL
+            value: "postgresql://kurochat_db_user:sbJ9hjMZH5ScMdeYP175dBkeFnXJckL5@dpg-d6s0u28gjchc73biuhu0-a/kurochat_db"
