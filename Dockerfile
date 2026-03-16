@@ -1,10 +1,8 @@
 FROM shinsenter/symfony:latest
 
-WORKDIR /app
+COPY . /var/www/html/
 
-COPY . .
-
-EXPOSE 8000
+EXPOSE 3000
 
 # CMD [ "symfony", "console", "doctrine:migrations:migrate", "--no-interaction" ]
 
