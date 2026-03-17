@@ -1,4 +1,4 @@
-FROM shinsenter/symfony:php5.4
+FROM shinsenter/symfony:php8.4
 
 COPY . /var/www/html/
 
