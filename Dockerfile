@@ -4,6 +4,8 @@ COPY . /var/www/html/
 
 EXPOSE 3000
 
+RUN composer install --no-dev --optimize-autoloader
+
 RUN symfony doctrine:migrations:migrate --no-interaction
 
 # CMD [ "symfony", "console", "doctrine:migrations:migrate", "--no-interaction" ]
