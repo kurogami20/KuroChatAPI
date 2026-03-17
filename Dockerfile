@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM shinsenter/symfony:php8.4
+FROM --platform=linux/amd64 shinsenter/symfony:php8.4
 
 COPY . /var/www/html/
 
